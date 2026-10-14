@@ -1,0 +1,88 @@
+// Lugares turísticos. "foto" queda en null hasta tener fotos propias (ponlas en /public/fotos).
+// Si la foto es de terceros, agrega "credito" con autor, licencia y enlace a la fuente.
+export const lugares = [
+  {
+    id: "siete-lagunas",
+    nombre: "Siete Lagunas",
+    categoria: "Páramo",
+    ubicacion: "Corregimiento La Carrera",
+    descripcion: "Siete espejos de agua en el páramo de Santurbán, en el límite con Arboledas. Paisaje de frailejones y niebla.",
+    tono: "laguna",
+    foto: "/fotos/siete-lagunas.jpg",
+    credito: {
+      autor: "CORPONOR, Ismael Contreras",
+      licencia: "CC BY-SA 3.0",
+      fuente: "https://commons.wikimedia.org/wiki/File:Siete_Lagunas,_Municipio_de_Cachira.jpg",
+    },
+  },
+  {
+    id: "laguna-guerrero",
+    nombre: "Laguna de Guerrero",
+    categoria: "Páramo",
+    ubicacion: "Zona de páramo",
+    descripcion: "Rodeada de frailejones y habitada por truchas arcoíris. Ideal para caminatas con guía local.",
+    tono: "laguna",
+    foto: null,
+  },
+  {
+    id: "cascada-caramba",
+    nombre: "Cascada La Caramba",
+    categoria: "Agua",
+    ubicacion: "Zona rural",
+    descripcion: "Una caída de tres cuerpos, señalada como una de las más largas y altas de Colombia.",
+    tono: "menta",
+    foto: null,
+  },
+  {
+    id: "santuario-lajita",
+    nombre: "Santuario de la Lajita",
+    categoria: "Fe",
+    ubicacion: "Cabecera",
+    descripcion: "Guarda la diminuta imagen de Nuestra Señora de la Lajita, aparecida en 1930. Destino de turismo religioso.",
+    tono: "salvia",
+    foto: null,
+  },
+  {
+    id: "cuevas-indios",
+    nombre: "Cuevas de los Indios",
+    categoria: "Historia",
+    ubicacion: "Las Peñas",
+    descripcion: "Refugio de los indios Cácharas, de la familia lingüística chibcha, primeros pobladores del territorio.",
+    tono: "salvia",
+    foto: null,
+  },
+  {
+    id: "casa-tapias",
+    nombre: "Casa de las Tapias",
+    categoria: "Historia",
+    ubicacion: "Municipio",
+    descripcion: "Construcción tradicional en tapia pisada, testimonio de la arquitectura campesina de la región.",
+    tono: "salvia",
+    foto: null,
+  },
+  {
+    id: "malecon-india",
+    nombre: "Malecón y la India",
+    categoria: "Pueblo",
+    ubicacion: "Cabecera",
+    descripcion: "Paseo urbano decorado con la figura de la india que dio nombre al pueblo.",
+    tono: "menta",
+    foto: null,
+  },
+  {
+    id: "condor",
+    nombre: "Cielo del cóndor",
+    categoria: "Páramo",
+    ubicacion: "Alturas del municipio",
+    descripcion: "El cóndor de los Andes a veces surca los cielos de Cáchira. Lleva binoculares y paciencia.",
+    tono: "laguna",
+    foto: "/fotos/cielo-condor.jpg",
+    credito: {
+      autor: "Sheisale",
+      licencia: "CC BY-SA 4.0",
+      fuente: "https://commons.wikimedia.org/wiki/File:El_majestuoso_cielo_del_condor_de_los_Andes.jpg",
+    },
+  },
+];
+
+export const categorias = ["Todos", ...new Set(lugares.map((l) => l.categoria))];

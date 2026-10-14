@@ -1,0 +1,24 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html { scroll-behavior: smooth; }
+  body { @apply bg-menta-50 text-tinta font-sans antialiased; }
+  h1, h2, h3 { @apply font-display font-normal leading-tight; text-wrap: balance; }
+  :focus-visible { @apply outline-none ring-2 ring-menta-500 ring-offset-2 ring-offset-menta-50 rounded; }
+}
+
+@layer components {
+  .contenedor { @apply mx-auto max-w-6xl px-4 sm:px-6; }
+  .etiqueta { @apply font-mono text-[0.72rem] uppercase tracking-[0.14em] text-menta-700; }
+  .tarjeta { @apply rounded-2xl border border-menta-200 bg-white/80 backdrop-blur-sm; }
+  .boton { @apply inline-flex items-center gap-2 rounded-full bg-menta-700 px-5 py-2.5 font-semibold text-white transition hover:bg-menta-800 disabled:opacity-50 disabled:cursor-not-allowed; }
+  .boton-suave { @apply inline-flex items-center gap-2 rounded-full border border-menta-300 bg-white px-4 py-2 text-sm font-medium text-menta-800 transition hover:bg-menta-100; }
+  .campo { @apply w-full rounded-xl border border-menta-200 bg-menta-50/60 px-3.5 py-2.5 text-tinta placeholder:text-menta-700/50 focus:border-menta-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-menta-200; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
