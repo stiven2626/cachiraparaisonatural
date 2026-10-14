@@ -27,6 +27,7 @@ export const municipio = {
     correo: "stivenrozo1@gmail.com",
     telefono: "310 355 8222",
     whatsapp: "573103558222",
+    mensajeWhatsapp: "Hola, vengo de la página de Cáchira y quiero aportar información.",
   },
 };
 

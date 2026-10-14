@@ -2,6 +2,7 @@ import { Routes, Route, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import Navbar from "./components/Navbar.jsx";
 import Footer from "./components/Footer.jsx";
+import BotonWhatsApp from "./components/BotonWhatsApp.jsx";
 import Inicio from "./pages/Inicio.jsx";
 import Territorio from "./pages/Territorio.jsx";
 import Poblado from "./pages/Poblado.jsx";
@@ -43,6 +44,7 @@ export default function App() {
         </Routes>
       </main>
       <Footer />
+      <BotonWhatsApp />
     </div>
   );
 }
