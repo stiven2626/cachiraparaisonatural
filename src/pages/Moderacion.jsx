@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { Check, X } from "lucide-react";
 import { listarTodos, cambiarEstado } from "../services/aportes.js";
 
-// Panel de revisión. OJO: hoy no tiene contraseña porque los datos viven en tu
-// propio navegador. Cuando conectes un backend, protégelo con autenticación.
+// Panel de revisión. Hoy los aportes llegan por correo (ver services/aportes.js),
+// así que esta lista queda vacía. Cuando conectes un backend, protégelo con autenticación.
 const COLOR = {
   pendiente: "bg-amber-100 text-amber-800",
   aprobado: "bg-menta-200 text-menta-900",
@@ -29,7 +29,11 @@ export default function Moderacion() {
       <p className="mt-2 text-menta-900/70">{pendientes} pendiente{pendientes === 1 ? "" : "s"} de {items.length} en total.</p>
 
       <div className="mt-10 space-y-4">
-        {items.length === 0 && <p className="text-menta-900/60">Todavía no han llegado aportes.</p>}
+        {items.length === 0 && (
+          <p className="text-menta-900/60">
+            Los aportes llegan a tu correo. Para publicar uno, cópialo en src/data/voces.js.
+          </p>
+        )}
         {items.map((a) => (
           <article key={a.id} className="tarjeta grid gap-4 p-5 md:grid-cols-[1fr_auto]">
             <div className="min-w-0 space-y-2">

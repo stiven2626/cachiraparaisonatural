@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { Send, CheckCircle2, Copy } from "lucide-react";
+import { Send, CheckCircle2, Copy, ImagePlus } from "lucide-react";
 import Encabezado from "../components/Encabezado.jsx";
 import { crearAporte } from "../services/aportes.js";
 import { poblados } from "../data/poblados.js";
@@ -22,7 +22,6 @@ export default function Aporta() {
     autorizo: false,
   };
   const [form, setForm] = useState(inicial);
-  const [foto, setFoto] = useState(null);
   const [estado, setEstado] = useState({ enviando: false, error: "", listo: false });
 
   const cambiar = (campo) => (e) =>
@@ -38,9 +37,8 @@ export default function Aporta() {
     }
     setEstado({ enviando: true });
     try {
-      await crearAporte({ ...form, foto });
+      await crearAporte(form);
       setForm({ ...inicial, tipo: form.tipo, lugar: form.lugar });
-      setFoto(null);
       e.target.reset();
       setEstado({ listo: true });
     } catch (err) {
@@ -100,15 +98,18 @@ export default function Aporta() {
             </label>
           </div>
 
-          <label className="grid gap-1.5 text-sm font-semibold">
-            <span>Foto <span className="font-normal text-menta-800/60">(opcional, hasta 1,5 MB)</span></span>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={(e) => setFoto(e.target.files[0] || null)}
-              className="text-sm file:mr-3 file:rounded-full file:border-0 file:bg-menta-100 file:px-4 file:py-2 file:font-semibold file:text-menta-800 hover:file:bg-menta-200"
-            />
-          </label>
+          <div className="flex flex-wrap items-center gap-3 rounded-xl bg-menta-50 p-4 text-sm text-menta-900/80">
+            <ImagePlus size={18} className="shrink-0 text-menta-700" />
+            <span className="min-w-0 flex-1">¿Tienes fotos? Envíalas por WhatsApp con el título de tu aporte.</span>
+            <a
+              href={`https://wa.me/${municipio.contacto.whatsapp}?text=${encodeURIComponent(`Hola, envío fotos para mi aporte: ${form.titulo || "(título)"}`)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="boton-suave py-1"
+            >
+              Enviar fotos
+            </a>
+          </div>
 
           <label className="flex items-start gap-3 text-sm text-menta-900/75">
             <input type="checkbox" className="mt-1 accent-menta-500" checked={form.autorizo} onChange={cambiar("autorizo")} />

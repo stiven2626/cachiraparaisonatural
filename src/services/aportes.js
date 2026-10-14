@@ -1,72 +1,72 @@
 // Servicio de aportes de la comunidad.
 //
-// Hoy guarda todo en localStorage del navegador (sirve para probar en local).
-// Para producción, reemplaza estas funciones por llamadas a un backend
-// (por ejemplo Supabase: tabla "aportes" + Storage para fotos). La interfaz
-// de las funciones no debe cambiar, así las páginas siguen funcionando igual.
+// Los aportes se envían por correo con Web3Forms (https://web3forms.com): cada envío
+// llega como un correo al dueño de la clave. La clave de acceso es pública por diseño
+// (solo permite enviar al correo registrado), así que puede vivir en el código.
+//
+// Flujo de publicación: llega el correo → si lo apruebas, cópialo a src/data/voces.js
+// y aparece en la página Voces.
+//
+// Al migrar a un backend (por ejemplo Supabase), cambia solo este archivo y conserva
+// las firmas de las funciones.
 
-const CLAVE = "cachira-aportes";
+import { voces } from "../data/voces.js";
 
-function leer() {
-  try {
-    return JSON.parse(localStorage.getItem(CLAVE)) || [];
-  } catch {
-    return [];
+const CLAVE_WEB3FORMS = "3973ddf0-8384-4e8e-95de-dd7faf4dc3b0";
+
+/** Envía un aporte nuevo al correo de revisión. Las fotos se piden por WhatsApp. */
+export async function crearAporte({ tipo, lugar, titulo, texto, autor, contacto }) {
+  if (!CLAVE_WEB3FORMS) {
+    throw new Error("El formulario aún no está conectado. Escríbenos por WhatsApp o correo mientras tanto.");
   }
-}
 
-function guardar(lista) {
-  try {
-    localStorage.setItem(CLAVE, JSON.stringify(lista));
-  } catch {
-    throw new Error("No se pudo guardar el aporte en este navegador.");
-  }
-}
-
-const leerImagen = (archivo) =>
-  new Promise((resolve, reject) => {
-    if (!archivo) return resolve(null);
-    if (archivo.size > 1.5 * 1024 * 1024) {
-      return reject(new Error("La foto pesa más de 1,5 MB. Reduce su tamaño e inténtalo de nuevo."));
-    }
-    const lector = new FileReader();
-    lector.onload = () => resolve(lector.result);
-    lector.onerror = () => reject(new Error("No se pudo leer la foto."));
-    lector.readAsDataURL(archivo);
-  });
-
-/** Crea un aporte nuevo en estado "pendiente". */
-export async function crearAporte({ tipo, lugar, titulo, texto, autor, contacto, foto }) {
-  const fotoUrl = await leerImagen(foto);
   const aporte = {
-    id: crypto.randomUUID(),
     tipo,
     lugar,
     titulo: titulo.trim(),
     texto: texto.trim(),
     autor: autor.trim(),
-    contacto: contacto.trim(), // privado: nunca se muestra en la parte pública
-    fotoUrl,
-    estado: "pendiente",
+    contacto: contacto.trim(), // privado: solo llega al correo de revisión
     fecha: new Date().toISOString(),
   };
-  guardar([aporte, ...leer()]);
+
+  // FormData (sin cabeceras propias) evita la consulta previa CORS que Web3Forms rechaza.
+  const cuerpo = new FormData();
+  Object.entries({
+    access_key: CLAVE_WEB3FORMS,
+    subject: `Nuevo aporte: ${aporte.tipo} · ${aporte.lugar}`,
+    from_name: aporte.autor || "Visitante de Cáchira",
+    "Tipo": aporte.tipo,
+    "Lugar": aporte.lugar,
+    "Título": aporte.titulo,
+    "Relato": aporte.texto,
+    "Autor": aporte.autor || "Anónimo",
+    "Contacto (privado)": aporte.contacto || "No dejó contacto",
+  }).forEach(([campo, valor]) => cuerpo.append(campo, valor));
+
+  let respuesta;
+  try {
+    respuesta = await fetch("https://api.web3forms.com/submit", { method: "POST", body: cuerpo });
+  } catch {
+    throw new Error("No hay conexión. Revisa tu internet e inténtalo otra vez.");
+  }
+
+  const datos = await respuesta.json().catch(() => ({}));
+  if (!respuesta.ok || !datos.success) {
+    throw new Error("No pudimos enviar tu aporte. Inténtalo otra vez en unos minutos.");
+  }
   return aporte;
 }
 
-/** Aportes aprobados, sin datos de contacto. */
+/** Aportes aprobados (los que copiaste a src/data/voces.js), sin datos de contacto. */
 export async function listarPublicados() {
-  return leer()
-    .filter((a) => a.estado === "aprobado")
-    .map(({ contacto, ...publico }) => publico);
+  return voces.map(({ contacto, ...publico }) => publico);
 }
 
-/** Todos los aportes (solo para moderación). */
+/** Con el envío por correo, la revisión se hace desde la bandeja de entrada. */
 export async function listarTodos() {
-  return leer();
+  return [];
 }
 
-/** Cambia el estado: "pendiente" | "aprobado" | "rechazado". */
-export async function cambiarEstado(id, estado) {
-  guardar(leer().map((a) => (a.id === id ? { ...a, estado } : a)));
-}
+/** Sin efecto mientras los aportes lleguen por correo. */
+export async function cambiarEstado() {}
